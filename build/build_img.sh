@@ -112,7 +112,7 @@ build_target() {
             NEED_PREPARE_DNS=true
             ;;
         orangepi-zero2)
-            orangepizero_rootfs
+            orangepizero2_rootfs
             local arch="aarch64"
             local device_type=""
             local network_type=""
