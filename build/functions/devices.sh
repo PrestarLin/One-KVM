@@ -301,7 +301,7 @@ orangepizero_rootfs() {
 }
 
 orangepizero2_rootfs() {
-    local source_image="$SRCPATH/image/orangepi-zero2/Armbian_25.5.1_Orangepizero2_bookworm_current_6.12.23_minimal.img"
+    local source_image="$SRCPATH/image/orangepi-zero2/Armbian_Orangepizero2_bookworm_current.img"
     local target_image="$TMPDIR/rootfs.img"
     local offset=$((8192 * 512))
     local add_size_mb=600
@@ -310,8 +310,8 @@ orangepizero2_rootfs() {
     ensure_dir "$TMPDIR"
 
     echo "信息：下载或使用本地 Orange Pi Zero2 原始镜像..."
-    download_file_if_missing "$source_image" || { echo "错误：下载 Orange Pi Zero2 原始镜像失败" >&2; exit 1; }
-
+    # download_file_if_missing "$source_image" || { echo "错误：下载 Orange Pi Zero2 原始镜像失败" >&2; exit 1; }
+	curl -L https://dl.armbian.com/orangepizero2/Bookworm_current_minimal --output $SRCPATH/image/orangepi-zero2/Armbian_Orangepizero2_bookworm_current.img
     cp "$source_image" "$target_image" || { echo "错误：复制 Orange Pi Zero2 原始镜像失败" >&2; exit 1; }
 
     echo "信息：扩展镜像文件 (${add_size_mb}MB)..."
