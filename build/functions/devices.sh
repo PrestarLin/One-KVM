@@ -300,6 +300,39 @@ orangepizero_rootfs() {
     echo "信息：Orange Pi Zero Rootfs 准备完成。"
 }
 
+orangepizero2_rootfs() {
+    local source_image="$SRCPATH/image/orangepi-zero2/Armbian_25.5.1_Orangepizero2_bookworm_current_6.12.23_minimal.img"
+    local target_image="$TMPDIR/rootfs.img"
+    local offset=$((8192 * 512))
+    local add_size_mb=600
+
+    echo "信息：准备 Orange Pi Zero2 Rootfs..."
+    ensure_dir "$TMPDIR"
+
+    echo "信息：下载或使用本地 Orange Pi Zero2 原始镜像..."
+    download_file_if_missing "$source_image" || { echo "错误：下载 Orange Pi Zero2 原始镜像失败" >&2; exit 1; }
+
+    cp "$source_image" "$target_image" || { echo "错误：复制 Orange Pi Zero2 原始镜像失败" >&2; exit 1; }
+
+    echo "信息：扩展镜像文件 (${add_size_mb}MB)..."
+    sudo dd if=/dev/zero bs=1M count="$add_size_mb" >> "$target_image" || { echo "错误：扩展镜像文件失败" >&2; exit 1; }
+
+    echo "信息：调整镜像分区大小..."
+    sudo parted -s "$target_image" resizepart 1 100% || { echo "错误：使用 parted 调整分区大小失败" >&2; exit 1; }
+
+    find_loop_device
+    sudo losetup -P "$LOOPDEV" "$target_image" || { echo "错误：设置 loop 设备失败" >&2; exit 1; }
+
+    echo "信息：检查并调整文件系统大小..."
+    sudo e2fsck -y -f "${LOOPDEV}p1" || { echo "错误：文件系统检查失败" >&2; exit 1; }
+    sudo resize2fs "${LOOPDEV}p1" || { echo "错误：调整文件系统大小失败" >&2; exit 1; }
+
+    # 重新设置 LOOPDEV 为分区
+    sudo losetup -d "$LOOPDEV"
+    sudo losetup "$LOOPDEV" "$target_image" -o "$offset" || { echo "错误：重新设置 loop 设备失败" >&2; exit 1; }
+
+    echo "信息：Orange Pi Zero2 Rootfs 准备完成。"
+}
 # --- 特定设备的文件配置函数 ---
 
 config_cumebox2_files() {
@@ -340,6 +373,15 @@ config_orangepi_zero_files() {
     run_in_chroot "echo 'libcomposite' > /etc/modules-load.d/modules.conf"
 
     echo "信息：Orange Pi Zero 特定配置完成。"
+}
+
+config_orangepi_zero2_files() {
+    echo "信息：配置 Orange Pi Zero2 特定文件..."
+
+    # 清空 modules.conf 文件，避免加载不必要的模块
+    run_in_chroot "echo 'libcomposite' > /etc/modules-load.d/modules.conf"
+
+    echo "信息：Orange Pi Zero2 特定配置完成。"
 }
 
 config_onecloud_pro_files() {
