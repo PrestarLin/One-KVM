@@ -16,6 +16,7 @@ on:
           - e900v22c
           - octopus-flanet
           - orangepi-zero
+          - orangepi-zero2
           - oec-turbo
           - all
       create_release:
