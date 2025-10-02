@@ -111,6 +111,13 @@ build_target() {
             local network_type=""
             NEED_PREPARE_DNS=true
             ;;
+        orangepi-zero2)
+            orangepizero_rootfs
+            local arch="aarch64"
+            local device_type=""
+            local network_type=""
+            NEED_PREPARE_DNS=true
+            ;;
         oec-turbo)
             oec_turbo_rootfs
             local arch="aarch64"
@@ -157,6 +164,9 @@ build_target() {
         orangepi-zero)
             pack_img "Orangepi-Zero"
             ;;
+        orangepi-zero2)
+            pack_img "Orangepi-Zero2"
+            ;;
         oec-turbo)
             pack_img "OEC-Turbo"
             ;;
@@ -178,7 +188,7 @@ build_target() {
 # 检查是否提供了目标参数
 if [ -z "$1" ]; then
     echo "用法: $0 <target|all>"
-    echo "可用目标: onecloud, cumebox2, chainedbox, vm, e900v22c, octopus-flanet, onecloud-pro, orangepi-zero, oec-turbo"
+    echo "可用目标: onecloud, cumebox2, chainedbox, vm, e900v22c, octopus-flanet, onecloud-pro, orangepi-zero, orangepi-zero2, oec-turbo"
     exit 1
 fi
 
@@ -199,6 +209,7 @@ if [ "$1" = "all" ]; then
     build_target "octopus-flanet"
     build_target "onecloud-pro"
     build_target "orangepi-zero"
+    build_target "orangepi-zero2"
     build_target "oec-turbo"
     echo "信息：所有目标构建完成。"
 else
