@@ -311,7 +311,7 @@ orangepizero2_rootfs() {
 
     echo "信息：下载或使用本地 Orange Pi Zero2 原始镜像..."
     # download_file_if_missing "$source_image" || { echo "错误：下载 Orange Pi Zero2 原始镜像失败" >&2; exit 1; }
-	curl -L https://dl.armbian.com/orangepizero2/Bookworm_current_minimal --output $SRCPATH/image/orangepi-zero2/Armbian_Orangepizero2_bookworm_current.img.xz
+	wget https://dl.armbian.com/orangepizero2/Bookworm_current_minimal -O $SRCPATH/image/orangepi-zero2/Armbian_Orangepizero2_bookworm_current.img.xz
 	xz -dc $SRCPATH/image/orangepi-zero2/Armbian_Orangepizero2_bookworm_current.img.xz > Armbian_Orangepizero2_bookworm_current.img
     cp "$source_image" "$target_image" || { echo "错误：复制 Orange Pi Zero2 原始镜像失败" >&2; exit 1; }
 
